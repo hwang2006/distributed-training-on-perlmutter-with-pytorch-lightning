@@ -14,3 +14,116 @@ This repository is intended to guide users to run their pytorch lightning codes 
 [Perlmutter](https://docs.nersc.gov/systems/perlmutter/), located at [NERSC](https://www.nersc.gov/) in [Lawrence Berkeley National Laboratory](https://www.lbl.gov/), is a HPE Cray EX supercomputer with ~1,500 AMD Milan CPU nodes and ~6000 Nvidia A100 GPUs (4 GPUs per node). It debuted as the world 5th fastest supercomputer in the Top500 list in June 2021. Please refer to [Perlmutter Architecture](https://docs.nersc.gov/systems/perlmutter/architecture/) for the architecutural details of Perlmutter including system specifications, system performance, node specifications and interconnect. [Slurm](https://slurm.schedmd.com/) is adopted for cluster/resource management and job scheduling. 
 
 <p align="center"><img src="https://user-images.githubusercontent.com/84169368/218645916-30e920b5-b2cf-43ad-9f13-f6a2568c0e37.jpg" width=550/></p>
+
+## Installing Conda
+Once logging in to Perlmutter, you will need to have either [Anaconda](https://www.anaconda.com/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your scratch directory. Anaconda is distribution of the Python and R programming languages for scientific computing, aiming to simplify package management and deployment. Anaconda comes with +150 data science packages, whereas Miniconda, a small bootstrap version of Anaconda, comes with a handful of what's needed.
+
+Note that we will assume that your NERSC account information is as follows:
+```
+- Username: elvis
+- Project Name : ddlproj
+- Account (CPU) : m1234
+- Account (GPU) : m1234_g
+```
+so, you will have to replace it with your real NERSC account information.
+
+1. Download Anaconda or Miniconda. Miniconda comes with python, conda (package & environment manager), and some basic packages. Miniconda is fast to install and could be sufficient for distributed deep learning training practices. 
+```
+# (option 1) Anaconda 
+perlmutter:login15>$ cd $SCRATCH 
+perlmutter:login15>$ wget https://repo.anaconda.com/archive/Anaconda3-2022.10-Linux-x86_64.sh
+```
+```
+# (option 2) Miniconda 
+perlmutter:login15>$ cd $SCRATCH
+perlmutter:login15>$ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+2. Install Miniconda. By default conda will be installed in your home directory, which has a limited disk space. Please refer to [File System Overview](https://docs.nersc.gov/filesystems/) for more details of NERSC storage systems . You will install it on the /global/common/software/&lt;myproject&gt; directory and then create a conda virtual environment on your own scratch directory. 
+```
+perlmutter:login15>$ chmod 755 Miniconda3-latest-Linux-x86_64.sh
+perlmutter:login15>$ ./Miniconda3-latest-Linux-x86_64.sh
+
+Welcome to Miniconda3 py39_4.12.0
+
+In order to continue the installation process, please review the license
+agreement.
+Please, press ENTER to continue
+>>>                               <======== press ENTER here
+.
+.
+.
+Do you accept the license terms? [yes|no]
+[no] >>> yes                      <========= type yes here 
+
+Miniconda3 will now be installed into this location:
+/global/homes/s/swhwang/miniconda3        
+
+  - Press ENTER to confirm the location
+  - Press CTRL-C to abort the installation
+  - Or specify a different location below
+
+[/global/homes/s/swhwang/miniconda3] >>> /global/common/software/ddlproj/elvis/miniconda3  <======== type /global/common/software/myproject/$USER/miniconda3 here
+PREFIX=/global/common/software/dasrepo/swhwang/miniconda3
+Unpacking payload ...
+Collecting package metadata (current_repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: /global/common/software/ddlproj/elvis/miniconda3
+.
+.
+.
+Preparing transaction: done
+Executing transaction: done
+installation finished.
+Do you wish the installer to initialize Miniconda3
+by running conda init? [yes|no]
+[no] >>> yes         <========== type yes here
+.
+.
+.
+If you'd prefer that conda's base environment not be activated on startup,
+   set the auto_activate_base parameter to false:
+
+conda config --set auto_activate_base false
+
+Thank you for installing Miniconda3!
+```
+
+3. finalize installing Miniconda with environment variables set including conda path.
+```
+perlmutter:login15>$ source ~/.bashrc    # set conda path and environment variables 
+perlmutter:login15>$ conda config --set auto_activate_base false
+perlmutter:login15>$ which conda
+/global/common/software/ddlproj/elvis/miniconda3/condabin/conda
+perlmutter:login15>$ conda --version
+conda 23.1.0
+```
+
+## Installing Pytorch Lightning
+Now you are ready to build Horovod as a conda virtual environment: 
+1. load modules: 
+```
+perlmutter:login15>$ module load cudnn/8.3.2 nccl/2.17.1-ofi evp-patch
+```
+2. create a new conda virtual environment and activate the environment:
+```
+perlmutter:login15>$ conda create -n lightning
+perlmutter:login15>$ conda activate lightning
+```
+3. install the pytorch and lightning package:
+```
+(lightning) perlmutter:login15>$ conda install pytorch==1.13.0 torchvision==0.14.0 torchaudio==0.13.0 pytorch-cuda=11.7 -c pytorch -c nvidia
+(lightning) perlmutter:login15>$ pip install lightning
+```
+4. check if the pytorch lightning packages were installed:
+```
+(lightning) [glogin01]$ conda list | grep lightning
+# packages in environment at /scratch/$USER/miniconda3/envs/lightning:
+lightning                 2.0.2                    pypi_0    pypi
+lightning-cloud           0.5.36                   pypi_0    pypi
+lightning-utilities       0.8.0                    pypi_0    pypi
+pytorch-lightning         2.0.2                    pypi_0    pypi
+```
+
