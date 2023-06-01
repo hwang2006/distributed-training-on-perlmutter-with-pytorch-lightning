@@ -243,8 +243,8 @@ Password:
 <p align="center"><img src="https://user-images.githubusercontent.com/84169368/218938419-f38c356b-e682-4b1c-9add-6cfc29d53425.png"/></p> 
 
 ## Pytorch Lightning Examples on Jupyter
-Now, you are ready to run a pytorch lightning code on a jupyter notebook. Hopefully, the jupyter notebook examples would lead to getting familiarized yourself to the basics of pytorch lightning coding practices step-by-step. Please refer to the [notebooks](https://github.com/hwang2006/distributed-training-with-pytorch-lightning/tree/main/notebooks) directory for example codes.
-* [Link to Jupyter Notebook Examples](https://nbviewer.org/github/hwang2006/distributed-training-with-pytorch-lightning/blob/main/notebooks/pytorch_lightning_example.ipynb)
+Now, you are ready to run a pytorch lightning code on a jupyter notebook. Hopefully, the jupyter notebook examples would lead to getting familiarized yourself to the basics of pytorch lightning coding practices step-by-step. Please refer to the [notebooks](https://github.com/hwang2006/distributed-training-on-perlmutter-with-pytorch-lightning/tree/main/notebooks) directory for example codes.
+* [Link to Jupyter Notebook Examples](https://nbviewer.org/github/hwang2006/distributed-training-on-perlmutter-with-pytorch-lightning/blob/main/notebooks/pytorch_lightning_example.ipynb)
 
 ## Running Pytorch Lightning on SLURM
 We will show how to run a simple pytorch lightning code on multiple nodes interactively.
@@ -264,38 +264,38 @@ nid001140>$ module load cudnn/8.3.2 nccl/2.14.3  evp-patch
 nid001140>$ conda activate lightning
 (lightning) nid001140>$
 ```
-4. run pytorch a lightning code:
+4. run a pytorch lightning code:
 - to run on the two nodes with 4 GPUs each
 ```
-(lightning) nid001140>$ srun -N 2 --ntasks-per-node=4 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pytorch_mnist_lightning.py --num_nodes 2
+(lightning) nid001140>$ srun -N 2 --ntasks-per-node=4 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pytorch_mnist_lightning.py --num_nodes 2
 ```
-- to run the Bert NSMC (Naver Sentiment Movie Corpus) example in the src/pytorch-lightning directory, you need to install additional packages (i.e., emoji, soynlp, transformers and pandas) and download the nsmc datasets, for example, using git cloning
+- to run the Bert NSMC (Naver Sentiment Movie Corpus) example in the src directory, you need to install additional packages (i.e., emoji, soynlp, transformers and pandas) and download the nsmc datasets, for example, using git cloning
 ```
 (lightning) nid001140>$ pip install emoji==1.7.0 soynlp transformers pandas
 (lightning) nid001140>$ git clone https://github.com/e9t/nsmc  # download the nsmc datasets in the ./nsmc directory
-(lightning) nid001140>$ srun -N 2 --ntasks-per-node=4 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pt_bert_nsmc_lightning.py --num_nodes 2
+(lightning) nid001140>$ srun -N 2 --ntasks-per-node=4 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --num_nodes 2
 ```
 - to run on the two nodes with 2 GPUs each
 ```
-(lightning) nid001140>$ srun -N 2 --ntasks-per-node=2 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pytorch_mnist_lightning.py --num_nodes 2 --devices 2
-(lightning) nid001140>$ srun -N 2 --ntasks-per-node=2 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pt_bert_nsmc_lightning.py --num_nodes 2 --devices 2
+(lightning) nid001140>$ srun -N 2 --ntasks-per-node=2 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pytorch_mnist_lightning.py --num_nodes 2 --devices 2
+(lightning) nid001140>$ srun -N 2 --ntasks-per-node=2 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --num_nodes 2 --devices 2
 ```
 - to run on the two nodes with 1 GPU each
 ```
-(lightning) nid001140>$ srun -N 2 --ntasks-per-node=1 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pytorch_mnist_lightning.py --num_nodes 2 --devices 1
-(lightning) nid001140>$ srun -N 2 --ntasks-per-node=1 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pt_bert_nsmc_lightning.py --num_nodes 2 --devices 1
+(lightning) nid001140>$ srun -N 2 --ntasks-per-node=1 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pytorch_mnist_lightning.py --num_nodes 2 --devices 1
+(lightning) nid001140>$ srun -N 2 --ntasks-per-node=1 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --num_nodes 2 --devices 1
 ```
 - to run one node with 4 GPUs
 ```
-(lightning) nid001140>$ python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pytorch_mnist_lightning.py 
-(lightning) nid001140>$ python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pt_bert_nsmc_lightning.py
-(lightning) nid001140>$ srun -N 1 --ntasks-per-node=4 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pt_bert_nsmc_lightning.py
+(lightning) nid001140>$ python distributed-training-on-perlmutter-with-pytorch-lightning/src/pytorch_mnist_lightning.py 
+(lightning) nid001140>$ python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py
+(lightning) nid001140>$ srun -N 1 --ntasks-per-node=4 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py
 ```
 - to run one node with 2 GPUs
 ```
-(lightning) nid001140>$ python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pytorch_mnist_lightning.py --devices 2
-(lightning) nid001140>$ python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pt_bert_nsmc_lightning.py --devices 2
-(lightning) nid001140>$ srun -N 1 --ntasks-per-node=2 python distributed-training-on-perlmutter-using-horovod/src/pytorch-lightning/pt_bert_nsmc_lightning.py --devices 2
+(lightning) nid001140>$ python distributed-training-on-perlmutter-with-pytorch-lightning/src/pytorch_mnist_lightning.py --devices 2
+(lightning) nid001140>$ python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --devices 2
+(lightning) nid001140>$ srun -N 1 --ntasks-per-node=2 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --devices 2
 ```
 
 
