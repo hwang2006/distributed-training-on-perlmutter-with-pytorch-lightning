@@ -198,7 +198,8 @@ module load  cudnn/8.7.0  nccl/2.15.5-ofi  evp-patch
 echo "execute jupyter"
 source ~/.bashrc
 conda activate lightning
-cd $SCRATCH/ddl-projects
+#cd $SCRATCH/ddl-projects #root/working directory for jupyter server
+cd $SCRATCH #root/working directory for jupyter server
 jupyter lab --ip=0.0.0.0 --port=${PORT_JU} --NotebookApp.token=${USER}
 #bash -c "jupyter lab --ip=0.0.0.0 --port=${PORT_JU} --NotebookApp.token='${USER}'"
 echo "end of the job"
