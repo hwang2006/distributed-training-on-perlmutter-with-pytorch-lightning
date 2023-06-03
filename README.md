@@ -299,6 +299,54 @@ nid001140>$ conda activate lightning
 (lightning) nid001140>$ python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --devices 2
 (lightning) nid001140>$ srun -N 1 --ntasks-per-node=2 python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --devices 2
 ```
+Now, you are ready to run a pytorch lightning batch job.
+1. edit a batch job script running on 4 nodes with 4 GPUs each:
+```
+perlmutter:login15>$ cat pt_lightning_batch.sh
+#!/bin/bash
+#SBATCH -A dasrepo_g
+#SBATCH -C gpu
+#SBATCH -q regular
+#SBATCH -t 2:00:00
+#SBATCH -N 2
+#SBATCH -c 32
+#SBATCH --ntasks-per-node=4
+#SBATCH --gpus-per-node=4
+#SBATCH -o %x_%j.out
+#SBATCH -e %x_%j.err
+
+export SLURM_CPU_BIND="cores"
+
+module load  cudnn/8.3.2  nccl/2.17.1-ofi  evp-patch
+source ~/.bashrc
+conda activate craympi-hvd
+
+#srun python pt_bert_nsmc_lightning.py --num_nodes 2
+srun python distributed-training-on-perlmutter-with-pytorch-lightning/src/pt_bert_nsmc_lightning.py --num_nodes 2
+```
+2. submit and execute the batch job:
+```
+perlmutter:login15>$ sbatch pt_lightning_batch.sh
+Submitted batch job 5473133
+```
+3. check & monitor the batch job status:
+```
+perlmutter:login15>$ squeue -u $USER
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           5473133  gpu_ss11 horovod_    elvis PD       0:00      2 (Priority)
+perlmutter:login15>$ squeue -u $USER
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           5473133  gpu_ss11 horovod_    elvis  R       0:33      2 nid[002836,003928,004010,005024]
+```
+4. check the standard output & error files of the batch job:
+```
+perlmutter:login15>$ cat slurm_5473133.out
+perlmutter:login15>$ cat slurm_5473133.err
+```
+5. For some reason, you may want to stop or kill the batch job.
+```
+perlmutter:login15>$ scancel 5473133
+```
 
 
 
