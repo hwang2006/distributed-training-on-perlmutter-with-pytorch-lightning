@@ -4,8 +4,8 @@
 #SBATCH -q regular
 #SBATCH -t 8:00:00
 #SBATCH -N 1
-#SBATCH --ntasks-per-node=4
-#SBATCH --gpus-per-node=4
+#SBATCH --ntasks-per-node=1
+#SBATCH --gpus-per-node=1
 #SBATCH -c 32
 
 export SLURM_CPU_BIND="cores"
