@@ -109,7 +109,7 @@ perlmutter:login15>$ module load cudnn/8.3.2 nccl/2.17.1-ofi evp-patch
 ```
 2. create a new conda virtual environment and activate the environment:
 ```
-perlmutter:login15>$ conda create -n lightning
+perlmutter:login15>$ conda create -n lightning python=3.10
 perlmutter:login15>$ conda activate lightning
 ```
 3. install the pytorch and lightning package:
